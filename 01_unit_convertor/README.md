@@ -43,8 +43,6 @@ ms, s, min, hr, days, weeks, months, years
 
 ## Features ⭐
 
-## Features ⭐
-
 ### Core Functionality
 - Real-time Conversion: Instant results as you type
 - Flask Backend: Robust server-side calculations and validation
