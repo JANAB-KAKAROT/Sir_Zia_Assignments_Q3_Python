@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MY UNIT CONVERTOR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #202124;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 650px;
+            margin: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 10px;
+        }
+
+        .category-section {
+            margin-bottom: 35px;
+        }
+
+        .category-dropdown {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            background: white;
+            color: #3c4043;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .category-dropdown:focus {
+            border-color: #1a73e8;
+            border-width: 2px;
+        }
+
+        .conversion-container {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            margin-bottom: 20px;
+        }
+
+        .conversion-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .value-input {
+            width: 100%;
+            padding: 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 32px;
+            font-weight: 400;
+            text-align: center;
+            outline: none;
+            transition: border-color 0.2s;
+            background: white;
+        }
+
+        .value-input:focus {
+            border-color: #1a73e8;
+            border-width: 2px;
+        }
+
+        .value-output {
+            background: #f8f9fa;
+            color: #5f6368;
+            cursor: default;
+        }
+
+        .unit-dropdown {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 14px;
+            background: white;
+            color: #3c4043;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .unit-dropdown:focus {
+            border-color: #1a73e8;
+            border-width: 2px;
+        }
+
+        .equals-sign {
+            font-size: 28px;
+            font-weight: 400;
+            color: #5f6368;
+            flex-shrink: 0;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        .formula-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 4px;
+            padding: 12px 16px;
+            margin-top: 20px;
+        }
+
+        .formula-label {
+            display: inline-block;
+            background: #f39c12;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+
+        .formula-text {
+            font-size: 14px;
+            color: #856404;
+            display: inline;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 10px;
+            }
+            
+            .conversion-container {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .equals-sign {
+                transform: rotate(90deg);
+            }
+            
+            .value-input {
+                font-size: 24px;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MY UNIT CONVERTOR</h1>
+        </div>
+
+        <div class="category-section">
+            <select id="categorySelect" class="category-dropdown">
+                <option value="Length">Length</option>
+                <option value="Weight">Weight</option>
+                <option value="Temperature">Temperature</option>
+                <option value="Volume">Volume</option>
+                <option value="Area">Area</option>
+                <option value="Speed">Speed</option>
+            </select>
+        </div>
+
+        <div class="conversion-container">
+            <div class="conversion-side">
+                <input type="text" 
+                       id="inputValue" 
+                       class="value-input" 
+                       value="1" 
+                       placeholder="Enter value">
+                <select id="fromUnit" class="unit-dropdown">
+                    <option value="Metre">Metre</option>
+                </select>
+            </div>
+
+            <div class="equals-sign">=</div>
+
+            <div class="conversion-side">
+                <input type="text" 
+                       id="outputValue" 
+                       class="value-input value-output" 
+                       value="100" 
+                       readonly>
+                <select id="toUnit" class="unit-dropdown">
+                    <option value="Centimetre">Centimetre</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="formula-section">
+            <span class="formula-label">Formula</span>
+            <span class="formula-text" id="formulaText">multiply the length value by 100</span>
+        </div>
+    </div>
+
+    <script>
+        class StandaloneUnitConverter {
+            constructor() {
+                this.categorySelect = document.getElementById('categorySelect');
+                this.inputValue = document.getElementById('inputValue');
+                this.outputValue = document.getElementById('outputValue');
+                this.fromUnit = document.getElementById('fromUnit');
+                this.toUnit = document.getElementById('toUnit');
+                this.formulaText = document.getElementById('formulaText');
+                
+                // All conversion data stored locally
+                this.conversionData = {
+                    "Length": {
+                        "Metre": 1.0,
+                        "Kilometre": 1000.0,
+                        "Centimetre": 0.01,
+                        "Millimetre": 0.001,
+                        "Inch": 0.0254,
+                        "Foot": 0.3048,
+                        "Yard": 0.9144,
+                        "Mile": 1609.34,
+                        "Nautical Mile": 1852.0
+                    },
+                    "Weight": {
+                        "Kilogram": 1.0,
+                        "Gram": 0.001,
+                        "Pound": 0.453592,
+                        "Ounce": 0.0283495,
+                        "Ton": 1000.0,
+                        "Stone": 6.35029
+                    },
+                    "Temperature": {
+                        "Celsius": "C",
+                        "Fahrenheit": "F",
+                        "Kelvin": "K"
+                    },
+                    "Volume": {
+                        "Litre": 1.0,
+                        "Millilitre": 0.001,
+                        "Gallon (US)": 3.78541,
+                        "Gallon (UK)": 4.54609,
+                        "Quart": 0.946353,
+                        "Pint": 0.473176,
+                        "Cup": 0.236588,
+                        "Fluid Ounce": 0.0295735
+                    },
+                    "Area": {
+                        "Square Metre": 1.0,
+                        "Square Kilometre": 1000000.0,
+                        "Square Centimetre": 0.0001,
+                        "Square Inch": 0.00064516,
+                        "Square Foot": 0.092903,
+                        "Square Yard": 0.836127,
+                        "Hectare": 10000.0,
+                        "Acre": 4046.86
+                    },
+                    "Speed": {
+                        "Metre per Second": 1.0,
+                        "Kilometre per Hour": 0.277778,
+                        "Mile per Hour": 0.44704,
+                        "Knot": 0.514444,
+                        "Foot per Second": 0.3048
+                    }
+                };
+                
+                this.initializeEventListeners();
+                this.loadUnits();
+            }
+
+            initializeEventListeners() {
+                this.categorySelect.addEventListener('change', () => this.loadUnits());
+                this.inputValue.addEventListener('input', () => this.convert());
+                this.fromUnit.addEventListener('change', () => this.convert());
+                this.toUnit.addEventListener('change', () => this.convert());
+                
+                // Only allow numbers and decimal point in input
+                this.inputValue.addEventListener('keypress', (e) => {
+                    if (!/[\d.-]/.test(e.key) && !['Backspace', 'Delete', 'Tab', 'Enter'].includes(e.key)) {
+                        e.preventDefault();
+                    }
+                });
+            }
+
+            loadUnits() {
+                const category = this.categorySelect.value;
+                const units = Object.keys(this.conversionData[category] || {});
+                
+                this.populateDropdown(this.fromUnit, units, 0);
+                this.populateDropdown(this.toUnit, units, 1);
+                
+                this.convert();
+            }
+
+            populateDropdown(dropdown, units, defaultIndex) {
+                dropdown.innerHTML = '';
+                units.forEach((unit, index) => {
+                    const option = document.createElement('option');
+                    option.value = unit;
+                    option.textContent = unit;
+                    if (index === defaultIndex && units.length > defaultIndex) {
+                        option.selected = true;
+                    }
+                    dropdown.appendChild(option);
+                });
+            }
+
+            convert() {
+                const value = parseFloat(this.inputValue.value) || 0;
+                const category = this.categorySelect.value;
+                const fromUnit = this.fromUnit.value;
+                const toUnit = this.toUnit.value;
+
+                if (!fromUnit || !toUnit || !this.conversionData[category]) {
+                    this.outputValue.value = '0';
+                    this.updateFormula();
+                    return;
+                }
+
+                const categoryData = this.conversionData[category];
+                let result = 0;
+
+                if (category === "Temperature") {
+                    result = this.convertTemperature(value, fromUnit, toUnit);
+                } else {
+                    // Standard conversion using base units
+                    const baseValue = value * categoryData[fromUnit];
+                    result = baseValue / categoryData[toUnit];
+                }
+
+                // Format the result nicely
+                if (result === parseInt(result)) {
+                    this.outputValue.value = parseInt(result).toString();
+                } else if (Math.abs(result) >= 1000000) {
+                    this.outputValue.value = result.toExponential(2);
+                } else if (Math.abs(result) >= 1) {
+                    this.outputValue.value = parseFloat(result.toFixed(6)).toString();
+                } else {
+                    this.outputValue.value = parseFloat(result.toFixed(8)).toString();
+                }
+
+                this.updateFormula();
+            }
+
+            convertTemperature(value, fromUnit, toUnit) {
+                // Convert to Celsius first
+                let celsius;
+                if (fromUnit === "Fahrenheit") {
+                    celsius = (value - 32) * 5/9;
+                } else if (fromUnit === "Kelvin") {
+                    celsius = value - 273.15;
+                } else {
+                    celsius = value;
+                }
+
+                // Convert from Celsius to target
+                if (toUnit === "Fahrenheit") {
+                    return celsius * 9/5 + 32;
+                } else if (toUnit === "Kelvin") {
+                    return celsius + 273.15;
+                } else {
+                    return celsius;
+                }
+            }
+
+            updateFormula() {
+                const category = this.categorySelect.value.toLowerCase();
+                const fromUnit = this.fromUnit.value.toLowerCase();
+                const toUnit = this.toUnit.value.toLowerCase();
+                const inputVal = parseFloat(this.inputValue.value) || 1;
+                const result = parseFloat(this.outputValue.value) || 0;
+                
+                let formulaText = '';
+                
+                if (category === 'temperature') {
+                    formulaText = `convert ${fromUnit} to ${toUnit}`;
+                } else if (inputVal !== 0) {
+                    const factor = result / inputVal;
+                    
+                    if (Math.abs(factor - Math.round(factor)) < 0.001 && Math.round(factor) !== 0) {
+                        const roundedFactor = Math.round(factor);
+                        if (roundedFactor > 1) {
+                            formulaText = `multiply the ${category} value by ${roundedFactor}`;
+                        } else if (roundedFactor === 1) {
+                            formulaText = `the ${category} value remains the same`;
+                        }
+                    } else if (factor < 1 && factor > 0) {
+                        const divisor = Math.round(1/factor);
+                        if (Math.abs(1/factor - divisor) < 0.001) {
+                            formulaText = `divide the ${category} value by ${divisor}`;
+                        } else {
+                            formulaText = `multiply the ${category} value by ${factor.toFixed(6)}`;
+                        }
+                    } else {
+                        formulaText = `multiply the ${category} value by ${factor.toFixed(6)}`;
+                    }
+                }
+                
+                this.formulaText.textContent = formulaText || `convert ${fromUnit} to ${toUnit}`;
+            }
+        }
+
+        // Initialize the converter when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            new StandaloneUnitConverter();
+        });
+    </script>
+</body>
+</html>
