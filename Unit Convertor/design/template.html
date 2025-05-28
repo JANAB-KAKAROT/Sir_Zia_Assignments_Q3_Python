@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unit Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Main converter container -->
+    <div class="converter-main">
+        
+        <!-- Category selection header -->
+        <div class="category-header">
+            Length
+        </div>
+        
+        <!-- Conversion section -->
+        <div class="conversion-container">
+            
+            <!-- Left input section -->
+            <div class="input-section">
+                <div class="number-input">
+                    <input type="number" value="1" step="0.01">
+                </div>
+                <div class="unit-selector">
+                    <select>
+                        <option>Millimetre</option>
+                        <option>Centimetre</option>
+                        <option selected>Metre</option>
+                        <option>Kilometre</option>
+                        <option>Inch</option>
+                        <option>Foot</option>
+                        <option>Yard</option>
+                        <option>Mile</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Equals sign -->
+            <div class="equals-sign">=</div>
+            
+            <!-- Right output section -->
+            <div class="output-section">
+                <div class="result-display">100</div>
+                <div class="unit-selector">
+                    <select>
+                        <option>Millimetre</option>
+                        <option selected>Centimetre</option>
+                        <option>Metre</option>
+                        <option>Kilometre</option>
+                        <option>Inch</option>
+                        <option>Foot</option>
+                        <option>Yard</option>
+                        <option>Mile</option>
+                    </select>
+                </div>
+            </div>
+            
+        </div>
+        
+        <!-- Formula section -->
+        <div class="formula-container">
+            <span class="formula-badge">Formula</span>
+            <span class="formula-text">multiply the length value by 100</span>
+        </div>
+        
+    </div>
+
+    <!-- Optional JavaScript for interactivity -->
+    <script>
+        // basic conversion logic could go here
+        // but we're using streamlit for the backend
+    </script>
+</body>
+</html>
