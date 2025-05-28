@@ -1,4 +1,3 @@
-````markdown
 # 🔐 Password Strength Meter
 
 A simple Streamlit app that checks how strong your password is and gives suggestions to improve it.
