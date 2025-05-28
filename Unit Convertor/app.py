@@ -118,72 +118,74 @@ def get_formula_text(from_u, to_u, cat):
 # load styling
 load_css()
 
-# main app interface
+# main converter interface
 st.markdown('<div class="converter-main">', unsafe_allow_html=True)
 
-# category dropdown
+# get category selection first
 category = st.selectbox("", list(units_data.keys()), index=0, key="category")
 
-# display category header
+# category header
 st.markdown(f'<div class="category-header">{category}</div>', unsafe_allow_html=True)
 
-# conversion section
-st.markdown('<div class="conversion-container">', unsafe_allow_html=True)
+# conversion area
+st.markdown('<div class="conversion-area">', unsafe_allow_html=True)
 
-# create columns for layout
-left_col, equal_col, right_col = st.columns([5, 1, 5])
+# conversion row
+st.markdown('<div class="conversion-row">', unsafe_allow_html=True)
 
-with left_col:
-    # input section
-    st.markdown('<div class="input-section">', unsafe_allow_html=True)
-    
+# create three columns
+col1, col2, col3 = st.columns([1, 0.15, 1])
+
+with col1:
+    st.markdown('<div class="input-box">', unsafe_allow_html=True)
     input_value = st.number_input("", value=1.0, step=0.01, format="%.6f", key="input_val")
-    
     from_unit = st.selectbox("", 
                             list(units_data[category].keys()), 
                             index=2 if category == "Length" else 0,
                             key="from_unit")
-    
     st.markdown('</div>', unsafe_allow_html=True)
 
-with equal_col:
+with col2:
     st.markdown('<div class="equals-sign">=</div>', unsafe_allow_html=True)
 
-with right_col:
-    # output section  
-    st.markdown('<div class="output-section">', unsafe_allow_html=True)
+with col3:
+    st.markdown('<div class="output-box">', unsafe_allow_html=True)
     
     to_unit = st.selectbox("", 
                           list(units_data[category].keys()),
                           index=1 if category == "Length" else 1, 
                           key="to_unit")
     
-    # calculate and display result
+    # calculate result
     if input_value is not None:
         converted_val = convert_units(input_value, from_unit, to_unit, category)
         
-        # format result
-        if abs(converted_val) >= 1000000:
-            result_display = f"{converted_val:.2e}"
+        # format result exactly like google
+        if converted_val == 0:
+            result_text = "0"
+        elif abs(converted_val) >= 1000000:
+            result_text = f"{converted_val:.3g}"
         elif abs(converted_val) >= 1:
-            result_display = f"{converted_val:.6f}".rstrip('0').rstrip('.')
-        elif converted_val == 0:
-            result_display = "0"
+            if converted_val == int(converted_val):
+                result_text = str(int(converted_val))
+            else:
+                result_text = f"{converted_val:.10f}".rstrip('0').rstrip('.')
         else:
-            result_display = f"{converted_val:.8f}".rstrip('0').rstrip('.')
+            result_text = f"{converted_val:.10g}"
         
-        st.markdown(f'<div class="result-display">{result_display}</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="result-value">{result_text}</div>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
-st.markdown('</div>', unsafe_allow_html=True)  # end conversion-container
+st.markdown('</div>', unsafe_allow_html=True)  # end conversion-row
+st.markdown('</div>', unsafe_allow_html=True)  # end conversion-area
 
-# formula section
-formula_description = get_formula_text(from_unit, to_unit, category)
+# formula section at bottom
+formula_text = get_formula_text(from_unit, to_unit, category)
 st.markdown(f'''
-<div class="formula-container">
+<div class="formula-section">
     <span class="formula-badge">Formula</span>
-    <span class="formula-text">{formula_description}</span>
+    <span class="formula-text">{formula_text}</span>
 </div>
 ''', unsafe_allow_html=True)
 
