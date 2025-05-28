@@ -79,5 +79,3 @@ body {
 
 * Sir Zia Khan – for the Python Quarter 3 assignment inspiration
 * Streamlit – for making Python web apps easy
-
-```
